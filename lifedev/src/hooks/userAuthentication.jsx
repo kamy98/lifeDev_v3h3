@@ -8,6 +8,7 @@ import {
 } from 'firebase/auth'
 import { useState, useEffect } from "react";
 
+
 export const userAuthentication = () =>{
     const [error, setError] = useState(null)
     const [loading, setLoading] = useState(null)
@@ -34,6 +35,35 @@ export const userAuthentication = () =>{
                 data.password
             )
         }catch(error){
+            console.log(error.message)
+            console.errror(typeof error.message)
+
+            let systemErrorMessage
+
+            if (error.message.includes("Password")) {
+                systemErrorMessage = "A senha precisa conter pelo menos 6 caracteres"
+
+            } else if(error.message.includes("email-already")){
+                systemErrorMessage  = "Este email ja esta cadastrado"
+                
+            }else{
+                systemErrorMessage =  "Ocorreu um erro tente mais tarde"
+            }
+
+            setLoading(false)
+            setError(systemErrorMessage)
         }
+    }
+
+    useEffect(() =>  {
+        return () => setCancelled(true)
+    
+    }, [])
+
+    return{
+        auth,
+        createUser,
+        error,
+        loading
     }
 }
